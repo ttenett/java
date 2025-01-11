@@ -86,7 +86,7 @@ public class DbTest {
         }
     }
 
-    public void dbInsert() {
+    public void dbInsert(String memberType, String userId, String password, String name) {
         String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
         String dbUserId = "testuser1";
         String dbPassword = "tenet";
@@ -102,11 +102,6 @@ public class DbTest {
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
 
-        String memberTypeValue = "email";
-        String userIdValue = "zerobase@naver.com";
-        String passwordValue = "3333";
-        String nameValue = "제로베이스";
-
         // 2. 커넥션 객체 생성 - 쿼리가 다름.
         try {
             connection = DriverManager.getConnection(url, dbUserId, dbPassword);
@@ -117,10 +112,10 @@ public class DbTest {
 
             // 3. 프리페어 스테이트먼트 객체 생성, 밸류 생성
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, memberTypeValue);
-            preparedStatement.setString(2, userIdValue);
-            preparedStatement.setString(3, passwordValue);
-            preparedStatement.setString(4, nameValue);
+            preparedStatement.setString(1, memberType);
+            preparedStatement.setString(2, userId);
+            preparedStatement.setString(3, password);
+            preparedStatement.setString(4, name);
 
             // 4. 프리페어 스테이트먼트에 대해 execute업데이트 실행(excuteUpdate)
             int affected = preparedStatement.executeUpdate();
