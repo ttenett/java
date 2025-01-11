@@ -23,9 +23,16 @@ public class DbTestMain {
         System.out.println("이름 입력:>>>");
         String name = scanner.next();
 
+        // 멤버 클래스 별도로 만든 후 코드작성
+        Member member = new Member();
+        member.setMemberType(memberType);
+        member.setUserId(userId);
+        member.setPassword(password);
+        member.setName(name);
 
         // 위 데이터를 아래 파라미터로 넘겨서 값들을 저장하고 싶다. ->  function이니까 매개변수로 받으면 되겠지?
-        dbTest.dbInsert(memberType, userId, password, name);
+        // dbTest.Insert의 매개변수도 Member member로 넣어줌
+        dbTest.dbInsert(member);
 
 
     }

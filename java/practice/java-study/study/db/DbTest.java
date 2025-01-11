@@ -86,7 +86,7 @@ public class DbTest {
         }
     }
 
-    public void dbInsert(String memberType, String userId, String password, String name) {
+    public void dbInsert(Member member) {
         String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
         String dbUserId = "testuser1";
         String dbPassword = "tenet";
@@ -112,10 +112,10 @@ public class DbTest {
 
             // 3. 프리페어 스테이트먼트 객체 생성, 밸류 생성
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, memberType);
-            preparedStatement.setString(2, userId);
-            preparedStatement.setString(3, password);
-            preparedStatement.setString(4, name);
+            preparedStatement.setString(1, member.getMemberType());
+            preparedStatement.setString(2, member.getUserId());
+            preparedStatement.setString(3, member.getPassword());
+            preparedStatement.setString(4, member.getName());
 
             // 4. 프리페어 스테이트먼트에 대해 execute업데이트 실행(excuteUpdate)
             int affected = preparedStatement.executeUpdate();
