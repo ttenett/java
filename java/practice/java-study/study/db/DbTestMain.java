@@ -6,7 +6,9 @@ public class DbTestMain {
 
         DbTest dbTest = new DbTest();
         //dbTest.dbSelect();
-        dbTest.dbInsert();
+        //dbTest.dbInsert();
+        //dbTest.dbUpdate();
+        //dbTest.dbDelete();
 
 
 

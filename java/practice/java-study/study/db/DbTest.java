@@ -163,6 +163,159 @@ public class DbTest {
             }
         }
     }
+
+    public void dbUpdate() {
+        String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
+        String dbUserId = "testuser1";
+        String dbPassword = "tenet";
+
+        // 1. 드라이버 로드 - 동일
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+
+        String memberTypeValue = "email";
+        String userIdValue = "zerobase@naver.com";
+        String passwordValue = "9999";
+
+        // 2. 커넥션 객체 생성 - 쿼리가 다름.
+        try {
+            connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+
+            // 사실 values는 값 그대로 받아오면 안되고, 입력값을 받기 때문에 변경되는 값이어야 함.
+            String sql = " UPDATE member " +
+                    " SET password = ? " +
+                    " WHERE member_type = ? AND user_id = ? ";
+
+            // 3. 프리페어 스테이트먼트 객체 생성, 밸류 생성
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, passwordValue);
+            preparedStatement.setString(2, memberTypeValue);
+            preparedStatement.setString(3, userIdValue);
+
+
+            // 4. 프리페어 스테이트먼트에 대해 execute업데이트 실행(excuteUpdate)
+            int affected = preparedStatement.executeUpdate();
+
+            // 5. 잘 반영되었는지 확인
+            if (affected > 0) {
+                System.out.println(" 수정 성공 ");
+            } else {
+                System.out.println(" 수정 실패 ");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+
+            // 6. 객체 연결 해제(close)
+            try {
+                if (rs != null && !rs.isClosed()) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                if (preparedStatement != null && !preparedStatement.isClosed()) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.isClosed();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void dbDelete() {
+        String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
+        String dbUserId = "testuser1";
+        String dbPassword = "tenet";
+
+        // 1. 드라이버 로드 - 동일
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+
+        String memberTypeValue = "email";
+        String userIdValue = "zerobase@naver.com";
+
+        // 2. 커넥션 객체 생성 - 쿼리가 다름.
+        try {
+            connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+
+            // 사실 values는 값 그대로 받아오면 안되고, 입력값을 받기 때문에 변경되는 값이어야 함.
+            String sql = " DELETE FROM member " +
+                    " WHERE member_type = ? AND user_id = ? ";
+
+            // 3. 프리페어 스테이트먼트 객체 생성, 밸류 생성
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, memberTypeValue);
+            preparedStatement.setString(2, userIdValue);
+
+
+            // 4. 프리페어 스테이트먼트에 대해 execute업데이트 실행(excuteUpdate)
+            int affected = preparedStatement.executeUpdate();
+
+            // 5. 잘 반영되었는지 확인
+            if (affected > 0) {
+                System.out.println(" 삭제 성공 ");
+            } else {
+                System.out.println(" 삭제 실패 ");
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+
+            // 6. 객체 연결 해제(close)
+            try {
+                if (rs != null && !rs.isClosed()) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                if (preparedStatement != null && !preparedStatement.isClosed()) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.isClosed();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
 }
 
 
