@@ -2,7 +2,7 @@ package study.db;
 
 import java.sql.*;
 
-public class DbTest {
+public class MemberService {
 
     public void dbSelect() {
         // db 접속시 필요한 5개 정보.
@@ -86,7 +86,12 @@ public class DbTest {
         }
     }
 
-    public void dbInsert(Member member) {
+    // Insert 보다는 회원가입
+    /**
+     * 회원 가입 함수
+     * @param member 회원 정보
+     */
+    public void register(Member member) {
         String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
         String dbUserId = "testuser1";
         String dbPassword = "tenet";
@@ -237,7 +242,12 @@ public class DbTest {
         }
     }
 
-    public void dbDelete() {
+    // delete 보다는 회원 탈퇴
+
+    /**
+     * 회원 탈퇴 함수
+     */
+    public void withdraw(Member member) {
         String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
         String dbUserId = "testuser1";
         String dbPassword = "tenet";
@@ -253,9 +263,6 @@ public class DbTest {
         PreparedStatement preparedStatement = null;
         ResultSet rs = null;
 
-        String memberTypeValue = "email";
-        String userIdValue = "zerobase@naver.com";
-
         // 2. 커넥션 객체 생성 - 쿼리가 다름.
         try {
             connection = DriverManager.getConnection(url, dbUserId, dbPassword);
@@ -266,8 +273,8 @@ public class DbTest {
 
             // 3. 프리페어 스테이트먼트 객체 생성, 밸류 생성
             preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, memberTypeValue);
-            preparedStatement.setString(2, userIdValue);
+            preparedStatement.setString(1, member.getMemberType());
+            preparedStatement.setString(2, member.getUserId());
 
 
             // 4. 프리페어 스테이트먼트에 대해 execute업데이트 실행(excuteUpdate)
