@@ -1,10 +1,14 @@
 package db;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MemberService {
 
-    public void dbSelect() {
+    public List<Member> list() {
+    	
+    	List<Member> memberList = new ArrayList<>();
         // db 접속시 필요한 5개 정보.
         // 1. ip(domain) 2. port, 3. 계정 4. password 5.인스턴스
 
@@ -49,6 +53,15 @@ public class MemberService {
                 String userId = rs.getString("user_Id");
                 String password = rs.getString("password");
                 String name = rs.getString("name");
+                
+                // Member 생성, 값 채우기
+                Member member = new Member();
+                member.setMemberType(memberTypeValue);
+                member.setUserId(userId);
+                member.setPassword(password);
+                member.setName(name);
+                
+                memberList.add(member);
 
                 System.out.println(memberType + ", " + userId + ", " + password + ", " + name);
             }
@@ -84,6 +97,8 @@ public class MemberService {
                 throw new RuntimeException(e);
             }
         }
+        
+        return memberList;
     }
 
     // Insert 보다는 회원가입
