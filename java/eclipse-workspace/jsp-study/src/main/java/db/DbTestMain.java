@@ -7,7 +7,7 @@ public class DbTestMain {
 	public static void main(String[] args) {
 
         MemberService memberService = new MemberService();
-        memberService.dbSelect();
+        // memberService.dbSelect();
 	}
 
 	public static void _main(String[] args) {

@@ -38,18 +38,27 @@
 			<tr>
 				<%
 			        for(Member member : memberList) {
-			        	out.write("<tr>");
-			        	out.write("<td>" + member.getMemberType() + "</td>");
-			        	out.write("<td>" + member.getUserId()+ "</td>");
-			        	out.write("<td>" + member.getPassword()+ "</td>");
-			        	out.write("<td>" + member.getName()+ "</td>");
-			        	out.write("</tr>");
+			    %>
+			    <tr>
+			        	<td> <%=member.getMemberType()%> </td>
+			        	<td>
+			        		<a href="detail.jsp?memberType=<%=member.getMemberType() %>&userId=<%=member.getUserId()%>">
+			        		<%=member.getUserId()%>
+			        		</a>
+			        	</td>
+			        	<td> <%=member.getPassword()%> </td>
+			        	<td> <%=member.getName()%> </td>
+			    </tr>
+			    <%
 			        }
 				%>
 			</tr>
 		</tbody>
 	</table>
-
+	
+	<div>
+		<a href="add.jsp">회원 추가</a>
+	</div>
 
 </body>
 </html>

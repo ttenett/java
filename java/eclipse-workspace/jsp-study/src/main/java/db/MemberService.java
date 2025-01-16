@@ -101,6 +101,99 @@ public class MemberService {
         return memberList;
     }
 
+
+    public Member detail(String memberType, String userId) {
+    	
+    	Member member = null; // 값이없는데 리턴할 수는 없으니.
+
+        String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
+        String dbUserId = "testuser1";
+        String dbPassword = "tenet";
+
+        // 1. 드라이버 로드
+        try {
+            Class.forName("org.mariadb.jdbc.Driver");
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet rs = null;
+
+        // 2. 커넥션 객체 생성
+        try {
+            connection = DriverManager.getConnection(url, dbUserId, dbPassword);
+
+            String sql = " "
+            		+ " select m.member_type, m.user_id, m.password, m.name "
+            		+ "		, md.mobile_no"
+            		+ "		, md.marketing_yn"
+            		+ "		, md.register_date"
+                    + "	from member m "
+            		+ "		left join member_detail md on md.member_type = m.member_type and m.user_id = md.user_id"
+                    + " where m.member_type = ? and m.user_id = ? "
+            		;
+
+            // 3. 프리페어 스테이트먼트 객체 생성, 밸류 생성
+            preparedStatement = connection.prepareStatement(sql);
+            preparedStatement.setString(1, memberType);
+            preparedStatement.setString(2, userId);
+
+            // 4. 프리페어 스테이트먼트에 대해 execute 쿼리 실행(excuteQuery)
+            rs = preparedStatement.executeQuery();
+
+            // 5. 결과 수행
+            
+            // detail-> 단건의 데이터만 가져오므로 while문이 아니라 if문임
+            // member가 생성되는 시점임.
+            if (rs.next()) {
+            	member = new Member(); // 여기서 생성하고 값을 할당. 여기에 걸리지 않으면 회원은 null 처리
+                // Member 생성, 값 채우기
+                member.setMemberType(rs.getString("member_type"));
+                member.setUserId(rs.getString("user_Id"));
+                member.setPassword(rs.getString("password"));
+                member.setName(rs.getString("name"));
+                member.setMobileNo(rs.getString("mobile_no"));
+                member.setMarketingYn(rs.getBoolean("marketing_yn"));
+                member.setRegisterDate(rs.getDate("register_date"));
+
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+
+        } finally {
+
+            // 6. 객체 연결 해제(close)
+            try {
+                if (rs != null && !rs.isClosed()) {
+                    rs.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                if (preparedStatement != null && !preparedStatement.isClosed()) {
+                    preparedStatement.close();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
+            try {
+                if (connection != null && !connection.isClosed()) {
+                    connection.isClosed();
+                }
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+        
+        return member;
+    }
+
     // Insert 보다는 회원가입
     /**
      * 회원 가입 함수

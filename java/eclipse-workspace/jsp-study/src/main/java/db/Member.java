@@ -1,11 +1,17 @@
 package db;
 
+import java.util.Date;
+
 public class Member {
 
     private String memberType;
     private String userId;
     private String password;
     private String name;
+    
+    private String mobileNo;
+    private boolean marketingYn;
+    private Date registerDate;
 
     public String getMemberType() {
         return memberType;
@@ -38,4 +44,30 @@ public class Member {
     public void setName(String name) {
         this.name = name;
     }
+
+	public String getMobileNo() {
+		return mobileNo;
+	}
+
+	public void setMobileNo(String mobileNo) {
+		this.mobileNo = mobileNo;
+	}
+
+	public boolean isMarketingYn() {
+		return marketingYn;
+	}
+
+	public void setMarketingYn(boolean marketingYn) {
+		this.marketingYn = marketingYn;
+	}
+
+	public Date getRegisterDate() {
+		return registerDate;
+	}
+
+	public void setRegisterDate(Date registerDate) {
+		this.registerDate = registerDate;
+	}
+    
+    
 }
