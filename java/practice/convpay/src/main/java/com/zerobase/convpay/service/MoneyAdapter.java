@@ -19,6 +19,7 @@ public class MoneyAdapter {
         if(payCancelAmount < 100) {
             return MoneyUseCancelResult.MONEY_USE_CANCEL_FAIL;
         }
+
         return MoneyUseCancelResult.MONEY_USE_CANCEL_SUCCESS;
     }
 }

@@ -9,6 +9,14 @@ public class PayResponse {
     // 결제 성공 금액
     Integer paidAmount;
 
+    @Override // 인텔리제이에서 제공하는 toString은 객체 내용을 문자열로 만들어주는게 기본값.
+    public String toString() {
+        return "PayResponse{" +
+                "payResult=" + payResult +
+                ", paidAmount=" + paidAmount +
+                '}';
+    }
+
     public PayResponse(PayResult payResult, Integer paidAmount) {
         this.payResult = payResult;
         this.paidAmount = paidAmount;
