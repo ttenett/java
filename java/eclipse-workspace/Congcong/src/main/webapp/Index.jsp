@@ -25,8 +25,14 @@
 		List<BoardDto> boardList = boardDao.list();
 	%>
 
-	<h1> 글 목록 </h1>
+	<h1> 게시글 목록 </h1>
 	<table>
+	<colgroup>
+		<col style="width: 10%;"/>
+		<col style="width: 60%;"/>
+		<col style="width: 15%;"/>
+		<col style="width: 15%;"/>
+	</colgroup>
 		<thead>
 			<tr>
 				<th>번호</th>
@@ -43,22 +49,25 @@
 			    <tr>
 			        	<td> <%=boardDto.getBo_no()%> </td>
 			        	<td>
-			        		
-			        		<%=boardDto.getBo_name()%>
+			        		<a href="detail.jsp?bo_no=<%=boardDto.getBo_no()%>">
+			        		<%=boardDto.getBo_title()%>
+			        		</a>
 			        		
 			        	</td>
-			        	<td> <%=boardDto.getBo_title()%> </td>
+			        	<td> <%=boardDto.getBo_name()%> </td>
 			        	<td> <%=boardDto.getBo_date()%> </td>
 			    </tr>
 			    <%
 			        }
 				%>
 			</tr>
+			<tr>
+	        	<td colspan="6" align="right">
+	        		<a href="add.jsp"><button>글쓰기</button></a>
+	        		<%-- <button onclick="location.href='add.jsp'">글쓰기</button>으로도 구현 가능--%>
+	        	</td>
+	        </tr>
 		</tbody>
 	</table>
-	
-	<div>
-		<a href="add.jsp">게시글 작성</a>
-	</div>
 </body>
 </html>
