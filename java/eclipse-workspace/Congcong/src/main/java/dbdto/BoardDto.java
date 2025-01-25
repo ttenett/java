@@ -20,16 +20,6 @@ public class BoardDto {
 	private String bo_content;
 	private Date bo_date;
 	
-
-//	public BoardDto(int bo_no, String bo_name, String bo_title, String bo_content, Date bo_date) {
-//	this.bo_no = bo_no;
-//	this.bo_name = bo_name;
-//	this.bo_title = bo_title;
-//	this.bo_content = bo_content;
-//	this.bo_date = bo_date;
-//	}
-	
-	
 	
 	public int getBo_no() {
 		return bo_no;

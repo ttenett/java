@@ -1,21 +1,22 @@
 package dbdao;
 
-import dbdto.BoardDto;
-
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import dbdto.BoardDto;
+
 public class BoardDao {
 	
 	// 게시글 전체 리스트
-	public List<BoardDao> list() {
+	public List<BoardDto> list() {
 		
-		List<BoardDao> boardList = new ArrayList<>();
+		List<BoardDto> boardList = new ArrayList<>();
 		
-        String url = "jdbc:mariadb://192.168.219.104:3306/testdb1";
-        String dbUserId = "user";
+        String url = "jdbc:mariadb://localhost:3306/testdb1";
+        String dbUserId = "testuser1";
         String dbPassword = "tenet";
+        
      // 드라이버 로드
     	try {
                 Class.forName("org.mariadb.jdbc.Driver");
@@ -26,13 +27,13 @@ public class BoardDao {
     	Connection connection = null;
     	PreparedStatement preparedStatement = null;
         ResultSet rs = null;
-//        List<BoardDto> res = new ArrayList<BoardDto>();
         
         // 커넥션 객체 생성
         try {
         	connection = DriverManager.getConnection(url, dbUserId, dbPassword);
         	
-        	String sql = " SELECT * FROM BOARD ";
+        	String sql = " SELECT bo_no, bo_name, bo_title, bo_date "
+        			+ " FROM board ";
         	
         	// statement 객체 생성
         	preparedStatement = connection.prepareStatement(sql);
@@ -46,13 +47,24 @@ public class BoardDao {
         		int boNo = rs.getInt("bo_no");
         		String boName = rs.getString("bo_name");
         		String boTitle = rs.getString("bo_name");
-        		String boContent = rs.getString("bo_title");
         		Date boDate = rs.getDate("bo_date");
+        		
+        		BoardDto boardDto = new BoardDto();
+        		boardDto.setBo_no(boNo);
+        		boardDto.setBo_name(boName);
+        		boardDto.setBo_title(boTitle);
+        		boardDto.setBo_date(boDate);
+        		
+        		boardList.add(boardDto);
+        		
+        		System.out.println(boNo + ", " + boName + ", " + boTitle + ", " + boDate);
         	}
         	
         } catch (SQLException e ) {
         	throw new RuntimeException(e);
+        	
         } finally {
+        	
         	// 객체 연결 해제
         	try {
                 if (rs != null && !rs.isClosed()) {
