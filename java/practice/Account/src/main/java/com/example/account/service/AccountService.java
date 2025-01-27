@@ -17,12 +17,9 @@ public class AccountService {
 //    private  String noFinal; @RequiredArgsConstructor delombok 해보면 final 타입만 자동으로 생성자를 만들어준다.
 
     @Transactional
-    public void createAccount() { // account table에 데이터를 저장
-        Account account = Account.builder()
-                .accountNumber("40000")
-                .accountStatus(AccountStatus.IN_USE)
-                .build();
-        accountRepository.save(account);
+    // 파라미터로 계좌를 생성하도록 변경
+    public void createAccount(Long userId, Long initialBalance) {
+
     } // 호출하려면 main 함수에서 호출할 수 있겠지만, 번거로움. controller에 호출할 수있는 엔드포인트 생성하기.
 
     @Transactional
