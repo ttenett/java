@@ -6,25 +6,49 @@ import com.example.account.repository.AccountRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
 
-@SpringBootTest
+import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.BDDMockito.given;
+
+@ExtendWith(MockitoExtension.class)
 class AccountServiceTest {
-    // private AccountService accountService = new AccountService(new AccountRepository());
-    // 테스트하려면 account 서비스 생성자 필요. 근데 지금은 단순하지만 의존성이 많아지면 뇌절의 뇌절이 된다..
-    // 테스트하기 너무 불편,, 이 accountService를 편하게 테스트할 수 있는 방법이 없으까 -> SprinBootTest
-    @Autowired
+
+    @Mock // 2.리포지토리를 가짜로 목으로 만들어서
+    private AccountRepository accountRepository;
+
+    @InjectMocks // 3.accountRepository에 붙여줌(인젝션, 의존성주입처럼 생성)
+    // 4.accountService에 가짜로만든 accountRepository를 서비스에 인젝트해줌.
+    // 1.그런데 여기엔 accountRepository가 의존되어있음. 가짜로 만들어서 넣어줘야 함. -> 모키토 @Mock으로
     private AccountService accountService;
 
-    @BeforeEach
-    // 각각의 테스트하기 전 동작시켜주는 코드 >> 순차적으로 생성될때 찾을 수 있음
-    // 아래에 id 둘다 2면, 첫번째는 1이아니라 실패하지만, 두번째 동작은 실행이 되고 성공됨.
-    void init() {
-        accountService.createAccount();
+    // 5.@BeforeEach부분 삭제
+
+    @Test
+    @DisplayName("계좌 조회 성공")
+    void testXXX() {
+        // given
+        given(accountRepository.findById(anyLong()))
+                .willReturn(Optional.of(Account.builder()
+                        .accountStatus(AccountStatus.UNREGISTERED)
+                        .accountNumber("65789")
+                        .build()));
+        //when
+        Account account = accountService.getAccount(4555L);
+
+        //then
+        assertEquals("65789", account.getAccountNumber());
+        assertEquals(AccountStatus.UNREGISTERED, account.getAccountStatus());
     }
+
 
     @Test
     @DisplayName("Test 이름 변경")
