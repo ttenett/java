@@ -30,6 +30,9 @@ dependencies {
 	// redis client
 	implementation 'org.redisson:redisson:3.22.0'
 	// embedded redis
+//	implementation group: 'it.ozimov', name: 'embedded-redis', version: '0.7.3'
+	// Logback (SLF4J의 구현체) 사용
+	implementation 'ch.qos.logback:logback-classic'
 	implementation('it.ozimov:embedded-redis:0.7.3') {
 		exclude group: "org.slf4j", module: "slf4j-simple"
 	}
@@ -45,3 +48,5 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+def void exclude(LinkedHashMap<String, String> stringStringLinkedHashMap) {}

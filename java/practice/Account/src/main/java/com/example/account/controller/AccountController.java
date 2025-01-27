@@ -3,6 +3,7 @@ package com.example.account.controller;
 import com.example.account.domain.Account;
 import com.example.account.repository.AccountRepository;
 import com.example.account.service.AccountService;
+import com.example.account.service.RedisTestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +14,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AccountController {
     private final AccountRepository accountRepository;
     private final AccountService accountService;
+    private final RedisTestService redisTestService;
+
+    @GetMapping("/get-lock")
+    public String getLock() {
+        return redisTestService.getLock(); // getLock한 결과를 바로 리턴
+    } // redistTestService의 getlock 호출, lock을 획득해올것임
 
     @GetMapping("/create-account")
     public String createAccount() {
