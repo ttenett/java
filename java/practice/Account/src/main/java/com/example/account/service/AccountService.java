@@ -2,6 +2,7 @@ package com.example.account.service;
 
 import com.example.account.domain.Account;
 import com.example.account.domain.AccountUser;
+import com.example.account.dto.AccountDto;
 import com.example.account.exception.AccountException;
 import com.example.account.repository.AccountRepository;
 import com.example.account.repository.AccountUserRepository;
@@ -30,7 +31,7 @@ public class AccountService {
      */
     @Transactional
     // 파라미터로 계좌를 생성하도록 변경
-    public Account createAccount(Long userId, Long initialBalance) {
+    public AccountDto createAccount(Long userId, Long initialBalance) {
         // Accountuser 로 값을 받아오기 > 지역변수에 넘겨줌. 없으면 예외.
         AccountUser accountUser = accountUserRepository.findById(userId)
                 // user가 없으면 예외를 날림 -> 에러를 날림.
@@ -40,21 +41,36 @@ public class AccountService {
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
                 // 문자로 되어잇는 accountNumber를 숫자로 변환. 밑에 toString도 되고 ""도 됨
                 .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
-                // account가 하나돠 없었다면
+                // account가 하나도 없었다면
                 .orElse("1000000000");
 
         // 신규 계좌 저장
-        return accountRepository.save(
-                Account.builder()
-                        .accountUser(accountUser)
-                        .accountStatus(IN_USE)
-                        .accountNumber(newAccountNumber)
-                        .balance(initialBalance)
-                        .registeredAt(LocalDateTime.now())
-                        .build()
-
+        return AccountDto.fromEntity(
+                accountRepository.save(Account.builder()
+                .accountUser(accountUser)
+                .accountStatus(IN_USE)
+                .accountNumber(newAccountNumber)
+                .balance(initialBalance)
+                .registeredAt(LocalDateTime.now())
+                .build())
         );
-    } // 호출하려면 main 함수에서 호출할 수 있겠지만, 번거로움. controller에 호출할 수있는 엔드포인트 생성하기.
+
+
+//        ); // 생성된 값을 AccountDto로 변환
+//        return AccountDto.fromEntity(account);
+
+        // 만약 한번밖에 안쓰는 엔티티라면 이렇게만 만들어서 닫아주기.
+//        return AccountDto.fromEntity(
+//                accountRepository.save(
+//                Account.builder()
+//                        .accountUser(accountUser)
+//                        .accountStatus(IN_USE)
+//                        .accountNumber(newAccountNumber)
+//                        .balance(initialBalance)
+//                        .registeredAt(LocalDateTime.now())
+//                        .build()));
+    }
+
 
     @Transactional
     public Account getAccount(Long id) {

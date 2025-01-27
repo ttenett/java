@@ -31,5 +31,13 @@ public class CreateAccount { // controller에서 creatAccount 요청 클래스�
         private Long accountNumber; // 계좌번호
         private LocalDateTime registeredAt; // 등록 일시
 
+        public static Response from(AccountDto accountDto) {
+            return Response.builder()
+                    .userId(accountDto.getUserId())
+                    .accountNumber(accountDto.getUserId())
+                    .registeredAt(accountDto.getRegisteredAt())
+                    .build();
+        }
+
     }
 }

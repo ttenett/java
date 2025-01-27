@@ -1,6 +1,7 @@
 package com.example.account.controller;
 
 import com.example.account.domain.Account;
+import com.example.account.dto.AccountDto;
 import com.example.account.dto.CreateAccount;
 import com.example.account.repository.AccountRepository;
 import com.example.account.service.AccountService;
@@ -18,13 +19,14 @@ public class AccountController {
 
     @PostMapping("/account")
     public CreateAccount.Response createAccount( // 요청 응답값 지정
-            @RequestBody @Valid CreateAccount.Request request
-    ) { // 그 요청값을 가지고 createAccount 수행
-        accountService.createAccount( // 어카운트서비스의 파라미터들이 넘어오게 됨.
-                request.getUserId(),
-                request.getInitialBalance()
+            @RequestBody @Valid CreateAccount.Request request //CA의Request객체로 요청들어옴
+    ) { // 그 값으로 아래 생성 실행
+        return CreateAccount.Response.from(
+                accountService.createAccount( // 여기서 잘 생성됨. 넘어가서 사용자잇는지 확인,없으면 새로운 계좌 생성
+                        request.getUserId(),
+                        request.getInitialBalance() // AccountService에서 하나의 새로운 어카운트리파지토리 생성
+                )
         );
-        return "success";
     }
 
     @GetMapping("/get-lock")
