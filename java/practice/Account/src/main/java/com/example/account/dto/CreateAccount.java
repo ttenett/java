@@ -10,6 +10,7 @@ public class CreateAccount { // controller에서 creatAccount 요청 클래스�
     // creatAccount 하위에 주의 해야 할 점 - static으로 만들어야 함.
     @Getter
     @Setter
+    @AllArgsConstructor
     public static class Request {
         @NotNull
         @Min(1) // userId가 0인 사람이 없다고 가정하고 1부터 달아줌.

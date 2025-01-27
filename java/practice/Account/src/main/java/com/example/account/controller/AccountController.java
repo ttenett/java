@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController // 빈으로 등록해달라고 스프링에게 얘기해줌
 @RequiredArgsConstructor
 public class AccountController {
-    private final AccountRepository accountRepository;
     private final AccountService accountService;
     private final RedisTestService redisTestService;
 

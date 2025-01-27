@@ -39,8 +39,7 @@ public class AccountService {
 
         // 제일 마지막에(가장 최근) 생성된 계좌를 가져와서 계좌번호보다 하나 더 큰 숫자 생성
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
-                // 문자로 되어잇는 accountNumber를 숫자로 변환. 밑에 toString도 되고 ""도 됨
-                .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
+                .map(account -> (Integer.parseInt(account.getAccountNumber()) + 1 + ""))
                 // account가 하나도 없었다면
                 .orElse("1000000000");
 
@@ -54,21 +53,6 @@ public class AccountService {
                 .registeredAt(LocalDateTime.now())
                 .build())
         );
-
-
-//        ); // 생성된 값을 AccountDto로 변환
-//        return AccountDto.fromEntity(account);
-
-        // 만약 한번밖에 안쓰는 엔티티라면 이렇게만 만들어서 닫아주기.
-//        return AccountDto.fromEntity(
-//                accountRepository.save(
-//                Account.builder()
-//                        .accountUser(accountUser)
-//                        .accountStatus(IN_USE)
-//                        .accountNumber(newAccountNumber)
-//                        .balance(initialBalance)
-//                        .registeredAt(LocalDateTime.now())
-//                        .build()));
     }
 
 
