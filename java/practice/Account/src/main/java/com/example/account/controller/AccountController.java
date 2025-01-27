@@ -17,10 +17,13 @@ public class AccountController {
     private final RedisTestService redisTestService;
 
     @PostMapping("/account")
-    public CreateAccount.Response createAccount(
+    public CreateAccount.Response createAccount( // 요청 응답값 지정
             @RequestBody @Valid CreateAccount.Request request
-    ) {
-        accountService.createAccount();
+    ) { // 그 요청값을 가지고 createAccount 수행
+        accountService.createAccount( // 어카운트서비스의 파라미터들이 넘어오게 됨.
+                request.getUserId(),
+                request.getInitialBalance()
+        );
         return "success";
     }
 

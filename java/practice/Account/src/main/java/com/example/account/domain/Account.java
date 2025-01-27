@@ -1,5 +1,6 @@
 package com.example.account.domain;
 
+import com.example.account.type.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -30,6 +31,7 @@ public class Account {
     // 0123 으로가 아닌 AccountStatus상의 enum값 실제 문자 그대로 DB테이블에 저장
     @Enumerated(EnumType.STRING)
     private AccountStatus accountStatus;
+    private Long balance;
     // enum은 데이터로 0123 으로 저장해두면 무슨값인지 구별어렵다. 그래서 @Enumerated(EnumType.STRING) 사용
 
     private LocalDateTime registeredAt;

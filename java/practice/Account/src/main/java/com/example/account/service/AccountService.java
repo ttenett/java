@@ -1,25 +1,59 @@
 package com.example.account.service;
 
 import com.example.account.domain.Account;
-import com.example.account.domain.AccountStatus;
+import com.example.account.domain.AccountUser;
+import com.example.account.exception.AccountException;
 import com.example.account.repository.AccountRepository;
+import com.example.account.repository.AccountUserRepository;
+import com.example.account.type.AccountStatus;
+import com.example.account.type.ErrorCode;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.beans.Transient;
+import java.nio.channels.AcceptPendingException;
+import java.time.LocalDateTime;
+
+import static com.example.account.type.AccountStatus.IN_USE;
 
 @Service // 서비스타입 빈으로 스프링에 자동등록하기 위해 어노테이션 붙여줌.
 @RequiredArgsConstructor // 꼭 필요한 Argument가 들어간 생성자를 만들어줌. 내가 만들 빈에 다른 빈을 넣어주고 싶다면, final로 생성자 잡아주고, 어노테이션 사용
 public class AccountService {
     private final AccountRepository accountRepository; // 이 값은 생성자가 아니면 담을수가 없게됨 나중에 변경 불가 (final 이니깐)
 //    private  String noFinal; @RequiredArgsConstructor delombok 해보면 final 타입만 자동으로 생성자를 만들어준다.
+    private final AccountUserRepository accountUserRepository;
 
+    /**
+     * 사용자가 있는지 조회
+     * 계좌의 번호를 생성하고
+     * 계좌를 저장하고, 그 정보를 넘긴다.
+     */
     @Transactional
     // 파라미터로 계좌를 생성하도록 변경
-    public void createAccount(Long userId, Long initialBalance) {
+    public Account createAccount(Long userId, Long initialBalance) {
+        // Accountuser 로 값을 받아오기 > 지역변수에 넘겨줌. 없으면 예외.
+        AccountUser accountUser = accountUserRepository.findById(userId)
+                // user가 없으면 예외를 날림 -> 에러를 날림.
+                .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
 
+        // 제일 마지막에(가장 최근) 생성된 계좌를 가져와서 계좌번호보다 하나 더 큰 숫자 생성
+        String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
+                // 문자로 되어잇는 accountNumber를 숫자로 변환. 밑에 toString도 되고 ""도 됨
+                .map(account -> (Integer.parseInt(account.getAccountNumber())) + 1 + "")
+                // account가 하나돠 없었다면
+                .orElse("1000000000");
+
+        // 신규 계좌 저장
+        return accountRepository.save(
+                Account.builder()
+                        .accountUser(accountUser)
+                        .accountStatus(IN_USE)
+                        .accountNumber(newAccountNumber)
+                        .balance(initialBalance)
+                        .registeredAt(LocalDateTime.now())
+                        .build()
+
+        );
     } // 호출하려면 main 함수에서 호출할 수 있겠지만, 번거로움. controller에 호출할 수있는 엔드포인트 생성하기.
 
     @Transactional
