@@ -47,6 +47,9 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+
+	// 추가된 부분
+	jvmArgs "-Xshare:off"
 }
 
 def void exclude(LinkedHashMap<String, String> stringStringLinkedHashMap) {}

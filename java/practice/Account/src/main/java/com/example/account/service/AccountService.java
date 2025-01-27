@@ -46,12 +46,12 @@ public class AccountService {
         // 신규 계좌 저장
         return AccountDto.fromEntity(
                 accountRepository.save(Account.builder()
-                .accountUser(accountUser)
-                .accountStatus(IN_USE)
-                .accountNumber(newAccountNumber)
-                .balance(initialBalance)
-                .registeredAt(LocalDateTime.now())
-                .build())
+                        .accountUser(accountUser)
+                        .accountStatus(IN_USE)
+                        .accountNumber(newAccountNumber)
+                        .balance(initialBalance)
+                        .registeredAt(LocalDateTime.now())
+                        .build())
         );
     }
 
