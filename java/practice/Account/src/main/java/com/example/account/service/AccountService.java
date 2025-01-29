@@ -37,6 +37,11 @@ public class AccountService {
                 // user가 없으면 예외를 날림 -> 에러를 날림.
                 .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
 
+        // 이 사람이 소유하고 있는 계좌의 개수가 확인이 됨.
+        // 사실 정상적인 로직안에서 굳이 이 안에 크게 자리잡을 필요는 없다. 또 다른 케이스들을 validation하다가 너무 비대해짐. 정상적 코드 읽기 어려워짐
+        // >> 별도의 메서드로 추출하는게 좋다. 위에서 어카운트 찾고, 벨리데이트하고
+        validateCreateAccount(accountUser);
+
         // 제일 마지막에(가장 최근) 생성된 계좌를 가져와서 계좌번호보다 하나 더 큰 숫자 생성
         String newAccountNumber = accountRepository.findFirstByOrderByIdDesc()
                 .map(account -> (Integer.parseInt(account.getAccountNumber()) + 1 + ""))
@@ -55,6 +60,13 @@ public class AccountService {
         );
     }
 
+    // 어카운트 유저의 계좌수가 10개면 예외 발생시킴.
+    private void validateCreateAccount(AccountUser accountUser) {
+        // 방어적으로 하기 위해서는 == 10 보다 >= 10 이 낫다
+        if(accountRepository.countByAccountUser(accountUser) >= 10 ) {
+            throw new AccountException(ErrorCode.MAX_ACCOUNT_PER_USER_10);
+        }
+    }
 
     @Transactional
     public Account getAccount(Long id) {
