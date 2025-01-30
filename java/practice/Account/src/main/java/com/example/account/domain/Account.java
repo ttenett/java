@@ -1,6 +1,8 @@
 package com.example.account.domain;
 
+import com.example.account.exception.AccountException;
 import com.example.account.type.AccountStatus;
+import com.example.account.type.ErrorCode;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
@@ -21,7 +23,7 @@ import java.time.LocalDateTime;
 public class Account {
     @Id // Account라는 테이블 안에 Id를 PK를 지정해주겠다.
     @GeneratedValue
-    Long id;
+    private Long id;
 
     // 그냥 User라고 하면 DB 테이블쪽에 h2 시스템의 유저테이블과 충돌 할 수 있으므로 아래이름으로 함.
     @ManyToOne
@@ -43,5 +45,16 @@ public class Account {
     // 업데이트 된 것은 자동으로 바꿔줌
     @LastModifiedDate
     private LocalDate updatedAt;
+
+    // 중요한 데이터를 변경하는 로직은 객체 안에서 수행할 수 있도록
+    public void useBalance(Long amount) {
+        if (amount > balance) {
+            throw new AccountException(ErrorCode.AMOUNT_EXCEED_BALANCE);
+        }
+        balance -= amount;
+    }
+
+
+
 
 }
