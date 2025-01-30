@@ -93,6 +93,9 @@ public class AccountService {
         account.setAccountStatus(AccountStatus.UNREGISTERED);
         account.setUnRegisteredAt(LocalDateTime.now());
 
+        // test원활히 보이기 위해 save를 넣음. 추천하는 로직은 아님.
+        accountRepository.save(account);
+
         return AccountDto.fromEntity(account);
     }
 
