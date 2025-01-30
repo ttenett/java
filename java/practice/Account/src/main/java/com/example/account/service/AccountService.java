@@ -18,9 +18,12 @@ import org.springframework.stereotype.Service;
 
 import java.nio.channels.AcceptPendingException;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.example.account.type.AccountStatus.IN_USE;
+import static com.example.account.type.ErrorCode.*;
 
 @Service // 서비스타입 빈으로 스프링에 자동등록하기 위해 어노테이션 붙여줌.
 @RequiredArgsConstructor // 꼭 필요한 Argument가 들어간 생성자를 만들어줌. 내가 만들 빈에 다른 빈을 넣어주고 싶다면, final로 생성자 잡아주고, 어노테이션 사용
@@ -40,7 +43,7 @@ public class AccountService {
         // Accountuser 로 값을 받아오기 > 지역변수에 넘겨줌. 없으면 예외.
         AccountUser accountUser = accountUserRepository.findById(userId)
                 // user가 없으면 예외를 날림 -> 에러를 날림.
-                .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AccountException(USER_NOT_FOUND));
 
         // 이 사람이 소유하고 있는 계좌의 개수가 확인이 됨.
         // 사실 정상적인 로직안에서 굳이 이 안에 크게 자리잡을 필요는 없다. 또 다른 케이스들을 validation하다가 너무 비대해짐. 정상적 코드 읽기 어려워짐
@@ -83,7 +86,7 @@ public class AccountService {
     @Transactional
     public AccountDto deleteAccount(@NotNull @Min(1) Long userId, @NotBlank @Size(min = 10, max = 10) String accountNumber) {
         AccountUser accountUser = accountUserRepository.findById(userId)
-                .orElseThrow(() -> new AccountException(ErrorCode.USER_NOT_FOUND));
+                .orElseThrow(() -> new AccountException(USER_NOT_FOUND));
         Account account = accountRepository.findByAccountNumber(accountNumber)
                 .orElseThrow(() -> new AccountException(ErrorCode.ACCOUNT_NOT_FOUND));
 
@@ -102,14 +105,30 @@ public class AccountService {
     // 위에서 userId, accountNumber가져와서 아래의 다양한 validation을 수행함
     private void validateDeleteAccount(AccountUser accountUser, Account account) {
         if(!Objects.equals(accountUser.getId(), account.getAccountUser().getId())) {
-            throw new AccountException(ErrorCode.USER_ACCOUNT_UN_MATCH);
+            throw new AccountException(USER_ACCOUNT_UN_MATCH);
         }
         // 계좌가 이미
         if(account.getAccountStatus() == AccountStatus.UNREGISTERED) {
-            throw new AccountException(ErrorCode.ACCOUNT_ALREADY_UNREGISTERED);
+            throw new AccountException(ACCOUNT_ALREADY_UNREGISTERED);
         }
         if(account.getBalance() > 0) {
-            throw new AccountException(ErrorCode.BALANCE_NOT_EMPTY);
+            throw new AccountException(BALANCE_NOT_EMPTY);
         }
+    }
+
+    @Transactional
+    public List<AccountDto> getAccountsByUserId(Long userId) {
+        AccountUser accountUser = accountUserRepository.findById(userId)
+                .orElseThrow(() -> new AccountException(USER_NOT_FOUND));
+
+        List<Account> accounts = accountRepository
+                .findByAccountUser(accountUser);
+
+        // 어카운트 dto타입으로 변환되어있어야 함.
+        return accounts.stream()
+                .map(AccountDto::fromEntity)
+                // 위의 함수방식 또는 아래 람다식과 동일한 기능을 함.
+                // .map(account -> AccountDto.fromEntity(account))
+                .collect(Collectors.toList());
     }
 }
