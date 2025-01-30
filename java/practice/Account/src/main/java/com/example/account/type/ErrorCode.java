@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor // 생성자로 자동으로 만들어줌
 public enum ErrorCode {
     // 프론트에서 사용자 안내 메시지로 많이 사용. 개발자들이 아무렇게나 쓴 에러메시지보다는 정돈된 문장 쓰기
+    INTERNAL_SERVER_ERROR("내부 서버 오류가 발생했습니다."),
     INVALID_REQUEST("잘못된 요청입니다."),
     USER_NOT_FOUND("사용자가 없습니다."),
     ACCOUNT_NOT_FOUND("계좌가 없습니다."),
