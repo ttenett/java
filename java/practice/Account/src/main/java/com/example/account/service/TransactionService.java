@@ -144,6 +144,7 @@ public class TransactionService {
         }
     }
 
+    @Transactional
     public void saveFailedCancelTransaction(
             @NotBlank @Size(min = 10, max = 10) String accountNumber,
             @NotNull @Min(10) @Max(1000_000_000) Long amount) {
@@ -151,5 +152,17 @@ public class TransactionService {
                 .orElseThrow(() -> new AccountException(ErrorCode.ACCOUNT_NOT_FOUND));
 
         saveAndGetTransaction(CANCEL, F, account, amount);
+    }
+
+    public TransactionDto queryTransaction(String transactionId) {
+        // 일회용 메서드 형식이라 넣어줌
+//        Transaction transaction = transactionRepository.findByTransactionId(transactionId)
+//                .orElseThrow(() -> new AccountException(ErrorCode.TRANSACTION_NOT_FOUND));
+
+        return TransactionDto.fromEntity(
+                transactionRepository.findByTransactionId(transactionId)
+                        .orElseThrow(() -> new AccountException(ErrorCode.TRANSACTION_NOT_FOUND))
+        );
+
     }
 }

@@ -2,7 +2,7 @@
 GET http://localhost:8080/account?user_id=1
 Accept: application/json
 
-### Create account - 요청 이름
+### create account - 요청 이름
 POST http://localhost:8080/account
 Content-Type: application/json
 
@@ -11,7 +11,7 @@ Content-Type: application/json
   "initialBalance": 12345
 }
 
-### Delete account - 요청 이름
+### delete account - 요청 이름
 DELETE http://localhost:8080/account
 Content-Type: application/json
 
