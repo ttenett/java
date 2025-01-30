@@ -20,12 +20,14 @@ import java.time.LocalDate;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 public class AccountUser {
+    // 각 테이블간의 기본적인 pk를 공통적으로 가져감. id로 검색하니까
     @Id
     @GeneratedValue
     private Long id;
 
     private String name;
 
+    // 모든 테이블이 공통적으로 갖고있으면 좋다. 테이블의 메타정보.
     @CreatedDate
     private LocalDate createdAt;
     @LastModifiedDate
