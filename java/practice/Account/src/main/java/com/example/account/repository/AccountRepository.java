@@ -16,4 +16,6 @@ public interface AccountRepository extends JpaRepository<Account, Long> {
 
     // (단순히 카운트만 하기때문에) 인티저로 응답을 주는 메서드
     Integer countByAccountUser(AccountUser accountUser);
+
+    Optional<Account> findByAccountNumber(String accountNumber);
 }

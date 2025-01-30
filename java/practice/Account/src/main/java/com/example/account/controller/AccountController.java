@@ -3,6 +3,7 @@ package com.example.account.controller;
 import com.example.account.domain.Account;
 import com.example.account.dto.AccountDto;
 import com.example.account.dto.CreateAccount;
+import com.example.account.dto.DeleteAccount;
 import com.example.account.repository.AccountRepository;
 import com.example.account.service.AccountService;
 import com.example.account.service.RedisTestService;
@@ -24,6 +25,18 @@ public class AccountController {
                 accountService.createAccount( // 여기서 잘 생성됨. 넘어가서 사용자잇는지 확인,없으면 새로운 계좌 생성
                         request.getUserId(),
                         request.getInitialBalance() // AccountService에서 하나의 새로운 어카운트리파지토리 생성
+                )
+        );
+    }
+
+    @DeleteMapping("/account")
+    public DeleteAccount.Response deleteAccount( // 요청 응답값 지정
+            @RequestBody @Valid DeleteAccount.Request request
+    ) { // 그 값으로 아래 생성 실행
+        return DeleteAccount.Response.from(
+                accountService.deleteAccount( // 여기서 잘 생성됨. 넘어가서 사용자잇는지 확인,없으면 새로운 계좌 생성
+                        request.getUserId(),
+                        request.getAccountNumber() // AccountService에서 하나의 새로운 어카운트리파지토리 생성
                 )
         );
     }
