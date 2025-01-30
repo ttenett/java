@@ -221,7 +221,7 @@ public class MemberService {
 
             // 사실 values는 값 그대로 받아오면 안되고, 입력값을 받기 때문에 변경되는 값이어야 함.
             String sql = " insert into member (member_type, user_id, password, name) " +
-                    " values (?, ?, ?, ?); ";
+                    " values (?, ?, ?, ?) ";
 
             // 3. 프리페어 스테이트먼트 객체 생성, 밸류 생성
             preparedStatement = connection.prepareStatement(sql);
