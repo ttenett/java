@@ -8,6 +8,8 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -34,6 +36,8 @@ public class DiaryService {
     // 객체가 생김
     private final DiaryRepository diaryRepository;
     private final DateWeatherRepository dateWeatherRepository;
+    // 로거 생성
+    private static final Logger logger = LoggerFactory.getLogger(DiaryService.class);
 
     // 다이어리서비스 라는 빈이 생성될 때, 리포지토리를 가져옴 -> 이제 이 안에서 다이어리 리포지토리 사용가능
     public DiaryService(DiaryRepository diaryRepository, DateWeatherRepository dateWeatherRepository) {
@@ -45,11 +49,13 @@ public class DiaryService {
     // 매일 새벽1시마다 동작 (0/5 *****) 매분매시 5초간격으로 테스트
     @Scheduled(cron = "0 0 1 * * *")
     public void saveWeatherDate(){
+        logger.info("오늘도 날씨 데이터 잘 가져옴");
         dateWeatherRepository.save(getWeatherFromApi());
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date,String text) {
+        logger.info("started to create diary");
         // 매번 날씨데이터 가져와서 유저일기와 함께 저장하는 작업 했었음. 매번 날씨api 호출할필요 X
 //        // 세부기능 3가지 1. open weather map에서 날씨 데이터 가져오기
 //        // 아래에서 반환된 값 출력
@@ -72,6 +78,7 @@ public class DiaryService {
 
         // 다이어리 리포지토리 임포트하고나서
         diaryRepository.save(nowDiary);
+        logger.info("end to create diary");
 
     }
 
@@ -107,6 +114,7 @@ public class DiaryService {
     @Transactional(readOnly = true)
 
     public List<Diary> readDiary(LocalDate date){
+        logger.debug("read diary");
         return diaryRepository.findAllByDate(date);
     }
 
