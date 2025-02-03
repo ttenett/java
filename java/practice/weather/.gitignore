@@ -5,6 +5,9 @@ build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
+### api key file###
+application-API-KEY.properties
+
 ### STS ###
 .apt_generated
 .classpath
