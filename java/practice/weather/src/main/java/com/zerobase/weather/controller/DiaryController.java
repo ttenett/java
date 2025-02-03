@@ -1,11 +1,13 @@
 package com.zerobase.weather.controller;
 
+import com.zerobase.weather.domain.Diary;
 import com.zerobase.weather.service.DiaryService;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
 
 @RestController
 public class DiaryController {
@@ -25,5 +27,18 @@ public class DiaryController {
     // @RequestBody 요청할 때 body에 일기값(String)을 넣겠음
     void createDiary(@RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate date, @RequestBody String text){
         diaryService.createDiary(date, text);
+    }
+
+    // 일기 조회할때는 날짜값 정도만 바디에 넣으면 됨
+    @GetMapping("/read/diary")
+    List<Diary> readDiary(@RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate date) {
+        return diaryService.readDiary(date);
+    }
+
+    // 날짜 범위로 조회, 오늘로부터 과거 n일 계산 or 몇월 몇일부터 몇월 몇일까지 두개의 값 인풋받기
+    @GetMapping("/read/diaries")
+    List<Diary> readDiaries(@RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate startDate,
+                            @RequestParam @DateTimeFormat(iso= DateTimeFormat.ISO.DATE) LocalDate endDate) {
+        return diaryService.readDiaries(startDate, endDate);
     }
 }
