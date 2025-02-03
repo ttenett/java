@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 // 어노테이션을 통해 테스트라고 말해줘야 함.
 @SpringBootTest
 // db test를 할 때 많이 사용되는 어노테이션
-// 테스트코드 때문에 db안의 데이터들이 변경되면 안됨. 그것을 막기 위한 어노테이션.
+// 테스트코드 때문에 db안의 데이터들이 변경되면 안됨. 그것을 막기 위한 어노테이션. 모두 롤백처리 해줌
 @Transactional
 public class JdbcMemoRepositoryTest {
 

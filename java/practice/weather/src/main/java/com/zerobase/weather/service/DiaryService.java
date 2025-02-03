@@ -8,6 +8,8 @@ import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -19,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+// 각각 메소드들이 트랜잭션 동작하도록. (read only 만 가능하도록)
+@Transactional(readOnly = true)
 public class DiaryService {
 
     @Value("${openweathermap-key}")
@@ -31,6 +35,7 @@ public class DiaryService {
         this.diaryRepository = diaryRepository;
     }
 
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date,String text) {
         // 세부기능 3가지 1. open weather map에서 날씨 데이터 가져오기
         // 아래에서 반환된 값 출력
@@ -54,10 +59,12 @@ public class DiaryService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<Diary> readDiary(LocalDate date){
         return diaryRepository.findAllByDate(date);
     }
 
+    @Transactional(readOnly = true)
     public List<Diary> readDiaries(LocalDate startDate, LocalDate endDate) {
         // db값을 가져오려면 리포지토리에서 가져와야 한다.
         return diaryRepository.findAllByDateBetween(startDate, endDate);
