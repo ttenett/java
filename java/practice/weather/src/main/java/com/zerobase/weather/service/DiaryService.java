@@ -1,12 +1,15 @@
 package com.zerobase.weather.service;
 
+import com.zerobase.weather.domain.DateWeather;
 import com.zerobase.weather.domain.Diary;
+import com.zerobase.weather.repository.DateWeatherRepository;
 import com.zerobase.weather.repository.DiaryRepository;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,27 +33,40 @@ public class DiaryService {
 
     // 객체가 생김
     private final DiaryRepository diaryRepository;
+    private final DateWeatherRepository dateWeatherRepository;
+
     // 다이어리서비스 라는 빈이 생성될 때, 리포지토리를 가져옴 -> 이제 이 안에서 다이어리 리포지토리 사용가능
-    public DiaryService(DiaryRepository diaryRepository) {
+    public DiaryService(DiaryRepository diaryRepository, DateWeatherRepository dateWeatherRepository) {
         this.diaryRepository = diaryRepository;
+        this.dateWeatherRepository = dateWeatherRepository;
+    }
+
+    @Transactional
+    // 매일 새벽1시마다 동작 (0/5 *****) 매분매시 5초간격으로 테스트
+    @Scheduled(cron = "0 0 1 * * *")
+    public void saveWeatherDate(){
+        dateWeatherRepository.save(getWeatherFromApi());
     }
 
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public void createDiary(LocalDate date,String text) {
-        // 세부기능 3가지 1. open weather map에서 날씨 데이터 가져오기
-        // 아래에서 반환된 값 출력
-        //System.out.println(getWeaterString());
-        String weatherData = getWeaterString();
+        // 매번 날씨데이터 가져와서 유저일기와 함께 저장하는 작업 했었음. 매번 날씨api 호출할필요 X
+//        // 세부기능 3가지 1. open weather map에서 날씨 데이터 가져오기
+//        // 아래에서 반환된 값 출력
+//        //System.out.println(getWeaterString());
+//        String weatherData = getWeaterString();
+//
+//        // 받아온 날씨 json 파싱하기 / 리턴값 = 만든 함수(위에서 만든 변수)
+//        Map<String, Object> parsedWeather = parseWeather(weatherData);
 
-        // 받아온 날씨 json 파싱하기 / 리턴값 = 만든 함수(위에서 만든 변수)
-        Map<String, Object> parsedWeather = parseWeather(weatherData);
+        // 날씨 데이터 가져오기(API에서 가져오기 or DB에서 가져오기)
+        DateWeather dateWeather = getDateWeather(date);
 
-        // 파싱된 데이터 + 일기 값 우리 db에 담기
+
+        // 파싱된 데이터 + 일기 값 우리 db에 넣기
         // Diary 클래스에 @NoArgsConstructor 롬복 붙여줘서 생성자를 사용가능
         Diary nowDiary = new Diary();
-        nowDiary.setWeather(parsedWeather.get("main").toString());
-        nowDiary.setIcon(parsedWeather.get("icon").toString());
-        nowDiary.setTemperature((Double) parsedWeather.get("temp"));
+        nowDiary.setDateWeather(dateWeather);
         nowDiary.setText(text);
         nowDiary.setDate(date);
 
@@ -59,12 +75,41 @@ public class DiaryService {
 
     }
 
+    private DateWeather getWeatherFromApi(){
+        // 날씨는 매일 1번, 파싱도 매일1번 작업
+
+        // open weather map에서 날씨 데이터 가져오기
+        String weatherData = getWeaterString();
+
+        // 날씨 json 파싱하기
+        Map<String, Object> parsedWeather = parseWeather(weatherData);
+        DateWeather dateWeather = new DateWeather();
+        // 알아서 로컬데이트 시간을 가져옴
+        dateWeather.setDate(LocalDate.now());
+        dateWeather.setWeather(parsedWeather.get("main").toString());
+        dateWeather.setIcon(parsedWeather.get("icon").toString());
+        dateWeather.setTemperature((Double) parsedWeather.get("temp"));
+        return dateWeather;
+    }
+
+    private DateWeather getDateWeather(LocalDate date){
+        // 그날의 날씨가 DB에 존재하는지 확인
+        List<DateWeather> dateWeatherListFromDB = dateWeatherRepository.findAllByDate(date);
+        if(dateWeatherListFromDB.size() == 0){
+            // 새로 api에서 날씨 정보를 가져와야 한다
+            // 정책상 (채택) 현재 날씨를 가져오도록 하거나 날씨없이 일기를 쓰도록.
+            return getWeatherFromApi();
+        }else {
+            return dateWeatherListFromDB.get(0);
+        }
+    }
+
     @Transactional(readOnly = true)
+
     public List<Diary> readDiary(LocalDate date){
         return diaryRepository.findAllByDate(date);
     }
 
-    @Transactional(readOnly = true)
     public List<Diary> readDiaries(LocalDate startDate, LocalDate endDate) {
         // db값을 가져오려면 리포지토리에서 가져와야 한다.
         return diaryRepository.findAllByDateBetween(startDate, endDate);
