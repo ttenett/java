@@ -63,6 +63,19 @@ public class DiaryService {
         return diaryRepository.findAllByDateBetween(startDate, endDate);
     }
 
+    public void updateDiary(LocalDate date, String text) {
+        Diary nowDiary = diaryRepository.getFirstByDate(date);
+        // nowDiary.getText(); 다이어리에 이미 쓰여있는 텍스트값 반환
+        // 일기값만 수정
+        nowDiary.setText(text);
+        // 수정값 반영 - table에 row하나를 무조건 추가가 아니라, id값은 그대로 둔 채로 텍스트만 바꾼상태로 save - 덮어씌기 됨
+        diaryRepository.save(nowDiary);
+    }
+
+    public void deleteDiary(LocalDate date) {
+        diaryRepository.deleteAllByDate(date);
+    }
+
     private String getWeaterString() {
         String apiUrl = "https://api.openweathermap.org/data/2.5/weather?q=seoul&appid=" + apiKey;
 
