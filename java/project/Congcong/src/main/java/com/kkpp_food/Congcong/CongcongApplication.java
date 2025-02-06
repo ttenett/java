@@ -4,10 +4,10 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class KkppApplication {
+public class CongcongApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(KkppApplication.class, args);
+		SpringApplication.run(CongcongApplication.class, args);
 	}
 
 }
