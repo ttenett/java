@@ -18,8 +18,6 @@ public class DiaryController {
         this.diaryService = diaryService;
     }
 
-    public
-
     // 날씨 일기를 저장
     @PostMapping("/create/diary") // 해당 패스에 요청을 보냈을 때
     // @RequestParam 요청을 보낼때 넣어주는 파라미터 어노테이션
